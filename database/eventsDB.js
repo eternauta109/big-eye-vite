@@ -151,6 +151,80 @@ async function deleteThisEvent(eventId) {
   }
 }
 
+async function deleteMultipleEvents(frequencyId) {
+  /* console.log('rimuovi eventi multipli', frequencyId) */
+  await createDbEvents() // Assicura che il DB sia creato
+  await connect() // Connessione al DB
+
+  try {
+    // 1. Crea uno stream per leggere tutti gli eventi
+    const eventsToDelete = []
+
+    for await (const [key, value] of db.iterator()) {
+      /* console.log('prima di convertire in json', value) */
+      const event = JSON.parse(value) // Supponendo che i dati siano in JSON
+      /* console.log('in json', event) */
+      if (event.frequencyId === frequencyId) {
+        eventsToDelete.push(key) // Aggiungi l'ID dell'evento da eliminare
+      }
+    }
+
+    // 2. Elimina tutti gli eventi con il frequencyId
+    for (const eventId of eventsToDelete) {
+      await db.del(eventId)
+      console.log(`Event with ID ${eventId} deleted successfully.`)
+    }
+
+    console.log(`All events with frequencyId ${frequencyId} have been deleted.`)
+  } catch (error) {
+    console.error('Error deleting events by frequencyId:', error)
+    throw error
+  } finally {
+    await close() // Chiudi la connessione al DB
+  }
+}
+
+async function UpDateEventsDB(colorMap) {
+  console.log('UpDateEventsDB', colorMap)
+
+  await connect() // Connessione al DB
+
+  console.log('Inizio aggiornamento eventi nel DB')
+
+  try {
+    for await (const [key, value] of db.iterator()) {
+      try {
+        const event = JSON.parse(value) // Supponendo che i dati siano in JSON
+        console.log('Evento originale:', event)
+
+        if (event.eventType === 'ricorenza') {
+          event.eventType = 'ricorrenza'
+          console.log(`ricorrenza aggiornato con nuovo valore: ricorrenza`)
+        }
+
+        // Controlla se l'evento ha un eventType che corrisponde a una chiave in colorMap
+        if (event.eventType && colorMap[event.eventType]) {
+          // Aggiorna il campo colorEventType in base al tipo di evento
+          event.colorEventType = colorMap[event.eventType]
+
+          // Salva l'evento aggiornato nel DB
+          await db.put(key, JSON.stringify(event)) // Sovrascrive l'evento nel DB
+          console.log(`Evento aggiornato con nuovo colore: ${event.colorEventType}`)
+        } else {
+          console.log(`Tipo di evento non trovato o non mappato: ${event.eventType}`)
+        }
+      } catch (error) {
+        console.error(`Errore nel processare l'evento con chiave ${key}:`, error)
+      }
+    }
+  } catch (iteratorError) {
+    console.error("Errore durante l'iterazione del database:", iteratorError)
+  } finally {
+    await close() // Chiudi la connessione al DB dopo l'iterazione completa
+    console.log('Aggiornamento completato e database chiuso')
+  }
+}
+
 async function query(key) {
   return new Promise((resolve, reject) => {
     db.get(key, (err, value) => {
@@ -195,5 +269,7 @@ module.exports = {
   createDbEvents,
   getAllEvents,
   deleteThisEvent,
-  readAllEvents
+  UpDateEventsDB,
+  readAllEvents,
+  deleteMultipleEvents
 }

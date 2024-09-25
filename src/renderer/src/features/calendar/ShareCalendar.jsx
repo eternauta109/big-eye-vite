@@ -2,31 +2,42 @@ import { useState } from 'react'
 
 import ModalEvent from '../event/ModalEvent'
 import useEventsStore from '../../store/EventDataContext'
+import PrintOut from './ExportToExcel'
 import { Container, Grid, Switch, Button, FormGroup, FormControlLabel } from '@mui/material'
 import SchedulerComponent from '../scheduler/SchedulerComponent'
 import MyCalendar from './MyCalendar'
 import './calendar.css'
+import Filter from './Filter'
 
 const roundButtonStyle = {
   borderRadius: '10%',
   width: '100px',
   height: '60px',
-  margin: '20px',
+  marginBottom: '20px',
   minWidth: 'unset',
   backgroundColor: '#689F38' // Aggiungi il colore rosso al background
 }
 
 const ShareCalendar = () => {
   const [openNewEvent, setOpenNewEvent] = useState(false)
+  const [ricorency, setRicorency] = useState(false)
   const [upDate, setUpDate] = useState(false)
   const [checked, setChecked] = useState(false) //stato dello swith per visualizzare calendar/scheduler
-  const { initEvent } = useEventsStore()
+  const { initEvent, events } = useEventsStore()
+  const [filteredEvents, setFilteredEvents] = useState(null)
 
   const handleOpenNewEvent = () => {
+    /* console.log(event) */
     setUpDate(false)
-
+    setRicorency(false)
     setOpenNewEvent(true)
     // Imposta upDate a false quando viene aperto il modal
+  }
+
+  const handleOpenRicorencyEvent = () => {
+    setUpDate(false)
+    setRicorency(true)
+    setOpenNewEvent(true)
   }
 
   const handleOpenOldEvent = () => {
@@ -40,7 +51,6 @@ const ShareCalendar = () => {
   const handleChange = (event) => {
     setChecked(event.target.checked)
   }
-  //^^^
 
   const handleCloseNewEvent = () => {
     initEvent()
@@ -49,17 +59,35 @@ const ShareCalendar = () => {
 
   return (
     <Container maxWidth="xl" style={{ width: '100%', height: '100vh' }}>
-      <Grid container spacing={1} alignItems="center" justifyContent="center">
-        <Grid item xs={12} md={11}>
-          {!checked ? (
-            <MyCalendar handleOpen={handleOpenOldEvent} />
-          ) : (
-            <SchedulerComponent handleOpen={handleOpenOldEvent} />
-          )}
-        </Grid>
+      <Grid container spacing={1} alignItems="center" justifyContent="start">
         <Grid item xs={12} md={1}>
-          <Button variant="contained" style={roundButtonStyle} onClick={handleOpenNewEvent}>
-            Add ITEM
+          <Button
+            variant="contained"
+            style={roundButtonStyle}
+            onClick={handleOpenNewEvent}
+            sx={{
+              p: 5,
+              '&:hover': {
+                backgroundColor: 'darkred !important'
+              }
+            }}
+          >
+            Aggiungi Singola Attività
+          </Button>
+
+          <Button
+            variant="contained"
+            style={roundButtonStyle}
+            onClick={handleOpenRicorencyEvent}
+            sx={{
+              p: 5,
+              backgroundColor: 'teal !important', // Imposta il colore di sfondo a rosso
+              '&:hover': {
+                backgroundColor: 'darkred !important' // Colore di sfondo durante l'hover
+              }
+            }}
+          >
+            Aggiungi Attività Ricorrente
           </Button>
 
           <FormGroup>
@@ -71,13 +99,34 @@ const ShareCalendar = () => {
                   inputProps={{ 'aria-label': 'controlled' }}
                 />
               }
+              labelPlacement="top"
               label="scheduler"
             />
           </FormGroup>
         </Grid>
+        <Grid item xs={12} md={10}>
+          {!checked ? (
+            <MyCalendar
+              handleOpen={handleOpenOldEvent}
+              setRicorency={setRicorency}
+              filteredEvents={filteredEvents}
+            />
+          ) : (
+            <SchedulerComponent handleOpen={handleOpenOldEvent} />
+          )}
+        </Grid>
+        <Grid item xs={12} md={1}>
+          <Filter setFilteredEvents={setFilteredEvents} />
+        </Grid>
       </Grid>
 
-      <ModalEvent open={openNewEvent} handleClose={handleCloseNewEvent} upDate={upDate} />
+      <ModalEvent
+        open={openNewEvent}
+        handleClose={handleCloseNewEvent}
+        upDate={upDate}
+        ricorency={ricorency}
+      />
+      <PrintOut data={filteredEvents?.length > 0 ? filteredEvents : events} />
     </Container>
   )
 }

@@ -19,9 +19,10 @@ import {
   IconButton
 } from '@mui/material'
 
+import useEventsStore from '../../store/EventDataContext'
+
 import ClassicEvent from './eventType/ClassicEvent'
 import MattineEvent from './eventType/MattineEvent'
-import useEventsStore from '../../store/EventDataContext'
 import Prevendite from './eventType/Prevendite'
 import Promo from './eventType/Promo'
 import Compleanni from './eventType/Compleanni'
@@ -35,6 +36,8 @@ import Sopraluogo from './eventType/Sopraluogo'
 import Meeting from './eventType/Meeting'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import SubAction from './eventType/serviceEventType/SubAction'
+import Manutenzione from './eventType/Manutenzione'
+import Default from './eventType/Default'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -59,7 +62,6 @@ function NewEvent({ handleClose, upDate }) {
     totalTasks,
     upDateEvent,
     setEvents,
-    initEvent,
     deleteEvent,
     user,
     options
@@ -82,6 +84,10 @@ function NewEvent({ handleClose, upDate }) {
   //devo fare lo stesso con le tasks
   const onSubmit = async (e) => {
     e.preventDefault()
+
+    if (event.eventType === undefined) {
+      return console.log('non hai scelto event type')
+    }
 
     if (upDate) {
       if (event.manager) {
@@ -201,6 +207,7 @@ function NewEvent({ handleClose, upDate }) {
   }
 
   const RenderEventType = useCallback(() => {
+    console.log('event:', event)
     switch (event.eventType) {
       case 'evento':
         return <ClassicEvent />
@@ -228,8 +235,11 @@ function NewEvent({ handleClose, upDate }) {
         return <Meeting upDate={upDate} />
       case 'matinee':
         return <MattineEvent upDate={upDate} />
+      case 'manutenzione':
+        return <Manutenzione upDate={upDate} />
       default:
-        return <ClassicEvent />
+        console.log('Default')
+        return <Default upDate={upDate} />
     }
   }, [event.eventType])
 
@@ -252,7 +262,7 @@ function NewEvent({ handleClose, upDate }) {
     }
 
     return () => {
-      initEvent()
+      console.log('lascio newevent con event:', event)
     }
   }, [user.managersName.length])
 
@@ -261,7 +271,7 @@ function NewEvent({ handleClose, upDate }) {
       sx={{
         height: '600px',
         padding: 2,
-
+        width: '500px',
         mb: 2,
         overflowY: 'auto'
       }}
@@ -280,85 +290,90 @@ function NewEvent({ handleClose, upDate }) {
           />
         )}
 
-        <RenderEventType />
-        <TextField
-          fullWidth
-          label={`note: ${event.note ? event.note.length : 0}/${options.MAXNOTELENGTH}`}
-          inputProps={{ maxLength: options.MAXNOTELENGTH }}
-          variant="outlined"
-          multiline
-          name="note"
-          value={event?.note ? event.note : ''}
-          onChange={(e) => setFieldEvent({ campo: e.target.name, valore: e.target.value })}
-          rows={4}
-          sx={{ mt: 4, mb: 2 }}
-        />
+        {event?.eventType !== undefined && (
+          <>
+            <RenderEventType />
 
-        <SubAction type="event" upDate={upDate} />
-        <TextField
-          fullWidth
-          label="link egnyte"
-          variant="outlined"
-          size="small"
-          name="link"
-          value={event?.link ? event.link : ''}
-          onChange={(e) => setFieldEvent({ campo: e.target.name, valore: e.target.value })}
-          rows={1}
-          sx={{ mt: 2, mb: 2 }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {event?.link && (
-                  <IconButton
-                    onClick={() => openLink(event.link)}
-                    edge="end"
-                    aria-label="open link"
-                  >
-                    <OpenInNewIcon />
-                  </IconButton>
-                )}
-              </InputAdornment>
-            )
-          }}
-        />
+            <TextField
+              fullWidth
+              label={`note: ${event.note ? event.note.length : 0}/${options.MAXNOTELENGTH}`}
+              inputProps={{ maxLength: options.MAXNOTELENGTH }}
+              variant="outlined"
+              multiline
+              name="note"
+              value={event?.note ? event.note : ''}
+              onChange={(e) => setFieldEvent({ campo: e.target.name, valore: e.target.value })}
+              rows={4}
+              sx={{ mt: 4, mb: 2 }}
+            />
 
-        <FormControl fullWidth sx={{ my: 4 }}>
-          <InputLabel id="owner">person in charge</InputLabel>
-          <Select
-            fullWidth
-            labelId="owner"
-            value={event?.manager ? event.manager : ''}
-            onChange={(manager) =>
-              setFieldEvent({ campo: 'manager', valore: manager.target.value })
-            }
-            MenuProps={MenuProps}
-            input={<OutlinedInput label="assign this task to.." />}
-          >
-            <MenuItem value="">None</MenuItem>
-            {user?.managersName.map((el, key) => (
-              <MenuItem key={key} value={el}>
-                {el}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <Button fullWidth variant="outlined" type="submit" color="secondary">
-          {upDate ? 'updates' : 'save'}
-        </Button>
-        {upDate && (
-          <Box display="flex" justifyContent="center" alignItems="center" sx={{ mt: 6 }}>
-            <Button
-              variant="contained"
-              color="error"
-              sx={{ mt: 6 }}
-              onClick={(e) => {
-                onDelete(e, event.id)
+            <SubAction type="event" upDate={upDate} />
+            <TextField
+              fullWidth
+              label="link egnyte"
+              variant="outlined"
+              size="small"
+              name="link"
+              value={event?.link ? event.link : ''}
+              onChange={(e) => setFieldEvent({ campo: e.target.name, valore: e.target.value })}
+              rows={1}
+              sx={{ mt: 2, mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {event?.link && (
+                      <IconButton
+                        onClick={() => openLink(event.link)}
+                        edge="end"
+                        aria-label="open link"
+                      >
+                        <OpenInNewIcon />
+                      </IconButton>
+                    )}
+                  </InputAdornment>
+                )
               }}
-            >
-              Delete This Event
+            />
+
+            <FormControl fullWidth sx={{ my: 4 }}>
+              <InputLabel id="owner">person in charge</InputLabel>
+              <Select
+                fullWidth
+                labelId="owner"
+                value={event?.manager ? event.manager : ''}
+                onChange={(manager) =>
+                  setFieldEvent({ campo: 'manager', valore: manager.target.value })
+                }
+                MenuProps={MenuProps}
+                input={<OutlinedInput label="assign this task to.." />}
+              >
+                <MenuItem value="">None</MenuItem>
+                {user?.managersName.map((el, key) => (
+                  <MenuItem key={key} value={el}>
+                    {el}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Button fullWidth variant="outlined" type="submit" color="secondary">
+              {upDate ? 'updates' : 'save'}
             </Button>
-          </Box>
+            {upDate && (
+              <Box display="flex" justifyContent="center" alignItems="center" sx={{ mt: 6 }}>
+                <Button
+                  variant="contained"
+                  color="error"
+                  sx={{ mt: 6 }}
+                  onClick={(e) => {
+                    onDelete(e, event.id)
+                  }}
+                >
+                  Delete This Event
+                </Button>
+              </Box>
+            )}
+          </>
         )}
       </form>
     </Container>

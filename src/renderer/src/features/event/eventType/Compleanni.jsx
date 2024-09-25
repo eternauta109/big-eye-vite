@@ -6,7 +6,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline'
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone'
 import Groups2Icon from '@mui/icons-material/Groups2'
 
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { DateTimeRange } from './serviceEventType/Field'
 
 export default function Compleanni({ upDate }) {
@@ -17,20 +17,16 @@ export default function Compleanni({ upDate }) {
     !upDate &&
       setEvent({
         ...event,
-        title: '',
-        subAction: [],
+
         referent: '',
         email: '',
         phone: 0,
         film: '',
-        start: new Date(),
-        end: new Date(),
+
         number: 0,
         amount: 0
       })
   }, [])
-
-  useMemo(() => console.log('event in Compleanni event', event), [event])
 
   return (
     <>

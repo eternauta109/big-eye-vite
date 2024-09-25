@@ -10,13 +10,14 @@ import Slide from '@mui/material/Slide'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
+import Frequency from './eventType/Frequency'
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
 const style = {
-  width: '500px',
+  width: 'fit-content',
   bgcolor: 'background.paper',
   borderRadius: '8px',
   boxShadow: 24,
@@ -24,7 +25,7 @@ const style = {
 }
 
 // eslint-disable-next-line react/prop-types
-const ModalEvent = ({ open, handleClose, upDate }) => {
+const ModalEvent = ({ open, handleClose, upDate, ricorency }) => {
   const { initEvent, event } = useEventsStore()
 
   const handleDialogClose = () => {
@@ -34,7 +35,9 @@ const ModalEvent = ({ open, handleClose, upDate }) => {
 
   return (
     <Dialog
-      sx={{ top: '0' }}
+      sx={{
+        top: '0'
+      }}
       open={open}
       TransitionComponent={Transition}
       onClose={handleDialogClose}
@@ -63,7 +66,14 @@ const ModalEvent = ({ open, handleClose, upDate }) => {
       </DialogTitle>
       <DialogContent dividers>
         <Box sx={style}>
-          <NewEvent handleClose={handleClose} upDate={upDate} />
+          {event?.eventType === undefined && (
+            <Typography>devi scegliere un tipo di evento</Typography>
+          )}
+          {ricorency ? (
+            <Frequency handleClose={handleClose} upDate={upDate} />
+          ) : (
+            <NewEvent handleClose={handleClose} upDate={upDate} />
+          )}
         </Box>
       </DialogContent>
     </Dialog>

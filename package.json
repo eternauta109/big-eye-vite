@@ -1,9 +1,9 @@
 {
   "name": "big_eye_vite",
   "version": "1.0.0",
-  "description": "An Electron application with React",
+  "description": "bigeye for cinema",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "fabio conti",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --write .",
@@ -30,11 +30,13 @@
     "@mui/x-date-pickers-pro": "6.0.4",
     "@wojtekmaj/react-datetimerange-picker": "^5.5.0",
     "date-fns": "2.30.0",
+    "exceljs": "^4.4.0",
     "level": "^8.0.1",
     "react-big-calendar": "1.11.2",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-router-dom": "^6.10.0",
+    "rrule": "^2.8.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

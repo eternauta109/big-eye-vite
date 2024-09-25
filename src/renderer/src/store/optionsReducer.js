@@ -32,39 +32,62 @@ export const initialOption = {
       color: '#90A4AE'
     }
   ],
-  eventType: [
+  /* eventType: [
     {
-      type: 'evento',
+      type: 'operations',
       color: '#F39C12'
     },
     {
-      type: 'matineè',
+      type: 'concession',
       color: '#7DCEA0'
     },
     {
-      type: 'prevendite',
+      type: 'screen_content',
       color: '#BB8FCE'
     },
     {
-      type: 'promo',
+      type: 'eventi_sales',
       color: '#AAB7B8'
     },
     {
-      type: 'compleanni',
+      type: 'maintenance',
       color: '#448AFF'
-    },
-    {
-      type: 'extra',
-      color: '#EF5350'
     }
-  ],
+  ], */
+  colorMap: {
+    //ops
+    visita: '#1f618d',
+    compleanni: '#5499c7',
+    matinee: '#2980b9',
+    //manutenzione
+    manutenzione: '#6699ff',
+    //concession
+    delivery: '#af7ac5',
+    promo: '#9b59b6',
+    menu: '#633974',
+    //evento
+    sopraluogo: '#f7dc6f',
+    meeting: '#f4d03f',
+    evento: '#d4ac0d',
+    convention: '#d4ac0d',
+    privateproj: '#9a7d0a',
+    //screencontent
+    prevendite: '#7dcea0',
+    extra: '#52be80',
+    anteprima: '#27ae60 ',
+    maratona: '#1e8449 ',
+    stampa: '#196f3d'
+  },
   topicType: [
     { value: 'none', label: 'none' },
+    { value: 'utility', label: 'utlity' },
     { value: 'cascading', label: 'cascading' },
     { value: 'suggest', label: 'abitudini' },
     { value: 'tutorial', label: 'Tutorial' },
     { value: 'procedur', label: 'procedura interna' },
     { value: 'brief', label: 'brief' },
+    { value: 'file', label: 'file' },
+    { value: 'module', label: 'modulo' },
     { value: 'internalComunication', label: 'comunicazione da sede' }
   ],
   docTypes: [

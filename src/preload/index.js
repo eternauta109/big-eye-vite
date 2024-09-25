@@ -6,10 +6,12 @@ const api = {
   login,
   getPath,
   getAllEvents,
+  updateEvents,
   getSingleTask,
   deleteThisNotify,
   addNewEvent,
   removeEvent,
+  removeMultipleEvent,
   addNewTask,
   getAllTasks,
   removeTask,
@@ -113,6 +115,17 @@ async function getAllEvents() {
     throw error
   }
 }
+
+//updatecolor all events from events db
+async function updateEvents(colorMap) {
+  console.log('coorMap in preload', colorMap)
+  try {
+    await ipcRenderer.invoke('updateEvents', colorMap)
+  } catch (error) {
+    console.error('Errore in preload updateEvents:', error)
+    throw error
+  }
+}
 //aggiungi evento e aggiorna notifica ai colleghi
 async function addNewEvent(args) {
   try {
@@ -127,6 +140,17 @@ async function addNewEvent(args) {
 async function removeEvent(args) {
   try {
     const result = await ipcRenderer.invoke('removeEvent', args)
+    return result
+  } catch (error) {
+    console.error('Errore in preload removeEvent:', error)
+    throw error
+  }
+}
+
+async function removeMultipleEvent(args) {
+  /* console.log('da preload cancella multiple', args) */
+  try {
+    const result = await ipcRenderer.invoke('removeMultipleEvent', args)
     return result
   } catch (error) {
     console.error('Errore in preload removeEvent:', error)

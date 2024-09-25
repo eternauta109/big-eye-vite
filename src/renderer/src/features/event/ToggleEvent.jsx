@@ -1,133 +1,384 @@
 /* eslint-disable react/prop-types */
-
-import { ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material'
-import EventIcon from '@mui/icons-material/Event'
-import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility'
-import CelebrationIcon from '@mui/icons-material/Celebration'
-import SellIcon from '@mui/icons-material/Sell'
-import SchoolIcon from '@mui/icons-material/School'
-import DevicesOtherIcon from '@mui/icons-material/DevicesOther'
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
-import MovieCreationIcon from '@mui/icons-material/MovieCreation'
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun'
-import LocalAirportIcon from '@mui/icons-material/LocalAirport'
-import PhotoCameraFrontIcon from '@mui/icons-material/PhotoCameraFront'
-import Groups2Icon from '@mui/icons-material/Groups2'
-import LocalShippingIcon from '@mui/icons-material/LocalShipping'
+import { useState } from 'react'
+import { Typography, Tooltip, IconButton } from '@mui/material'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import Box from '@mui/material/Box'
+import Avatar from '@mui/material/Avatar'
+import opsIcon from '../../assets/ops.png'
+import maintenanceIcons from '../../assets/maintenance.png'
+import concIcon from '../../assets/concIcon.png'
+import eventIcon from '../../assets/eventIcon.png'
+import screenIcon from '../../assets/screenIcon.png'
+import ToggleService from './ToggleService'
 import useEventsStore from '../../store/EventDataContext'
 
-const colorMap = {
-  evento: '#FD102B',
-  matinee: '#7DCEA0',
-  prevendite: '#BB8FCE',
-  promo: '#F5B041 ',
-  compleanni: '#448AFF',
-  extra: '#FAFAD2',
-  anteprima: '#42C67B',
-  maratona: '#4EF9F4',
-  visita: '#FF5733',
-  stampa: '#669999',
-  sopraluogo: '#F7DC6F',
-  meeting: '#4291C6 ',
-  delivery: '#C49E97'
-}
 const ToggleEvent = () => {
-  const { event, setEvent } = useEventsStore()
+  const { setEvent, options } = useEventsStore()
+  const [selectedEvent, setSelectedEvent] = useState(null) // Stato per il pulsante
+  const [macroArea, setMacroArea] = useState(null)
 
   const handleToggleAlignment = (newAlignment) => {
-    console.log('toggleAlignment', newAlignment)
-    if (newAlignment !== null) {
-      setEvent({ eventType: newAlignment, colorEventType: colorMap[newAlignment] })
+    console.log('toggleAlignment', options)
+    if (newAlignment !== selectedEvent) {
+      setSelectedEvent(newAlignment)
+
+      //è qui che sostanzialmente si inizializza l'event
+      setEvent({
+        eventType: newAlignment,
+        colorEventType: options.colorMap[newAlignment],
+        start: new Date(),
+        end: new Date(),
+        subAction: [],
+        description: '',
+        division: '',
+        link: '',
+        note: ''
+      })
+    } else {
+      setSelectedEvent(null)
     }
+  }
+
+  const handleIconClick = (iconName) => {
+    /* console.log(`Icon clicked: ${iconName}`) */
+    setMacroArea(iconName)
+    // Aggiungi qui la logica che desideri, come il filtraggio degli eventi.
   }
 
   return (
     <>
-      <Typography variant="body2" color="grey">
-        scegli il tipo di evento
-      </Typography>
-      <ToggleButtonGroup
-        value={event.eventType ? event.eventType : 'evento'}
-        exclusive
-        sx={{ mb: 1 }}
-        aria-label="text alignment"
-      >
-        {Object.keys(colorMap)
-          .slice(0, 7)
-          .map((type) => (
-            <ToggleButton
-              key={type}
-              value={type}
-              aria-label={type}
-              sx={{
-                backgroundColor: colorMap[type],
-                '&.Mui-selected': { backgroundColor: colorMap[type], opacity: 0.7 }
-              }}
-              onClick={() => handleToggleAlignment(type)}
-            >
-              <Tooltip title={type}>{getIcon(type)}</Tooltip>
-            </ToggleButton>
-          ))}
-      </ToggleButtonGroup>
+      <>
+        <Box
+          sx={{
+            display: 'flex',
+            height: '100%',
+            flexDirection: 'raw', // Disposizione a colonna
+            alignItems: 'center', // Centra gli elementi orizzontalmente
+            justifyContent: 'flex-start', // Allinea gli elementi in alto verticalmente
+            gap: 1, // Spaziatura tra gli elementi
+            width: 'fit-content' // Imposta la larghezza al contenuto
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              height: '100%',
+              flexDirection: 'column', // Disposizione a colonna
+              alignItems: 'center', // Centra gli elementi orizzontalmente
+              justifyContent: 'flex-start', // Allinea gli elementi in alto verticalmente
+              gap: 2, // Spaziatura tra gli elementi
+              border: '1px solid #5499c7', // Bordo con colore e larghezza
+              borderRadius: '8px', // Arrotonda i bordi (opzionale)
+              padding: 1, // Aggiunge spazio interno
+              width: 'fit-content' // Imposta la larghezza al contenuto
+            }}
+          >
+            <Typography variant="body2" color="grey">
+              ops
+            </Typography>
+            <Tooltip title="Ops">
+              <IconButton onClick={() => handleIconClick('ops')}>
+                <Avatar
+                  alt="My Icon"
+                  src={opsIcon}
+                  sx={{ width: 50, height: 50 }} // Adjust the size here
+                  variant="square" // Change to "circular" for rounded or "rounded" for rounded square
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              height: '100%',
+              flexDirection: 'column', // Disposizione a colonna
+              alignItems: 'center', // Centra gli elementi orizzontalmente
+              justifyContent: 'flex-start', // Allinea gli elementi in alto verticalmente
+              gap: 2, // Spaziatura tra gli elementi
+              border: '1px solid #6699ff', // Bordo con colore e larghezza
+              borderRadius: '8px', // Arrotonda i bordi (opzionale)
+              padding: 1, // Aggiunge spazio interno
+              width: 'fit-content' // Imposta la larghezza al contenuto
+            }}
+          >
+            <Typography variant="body2" color="grey">
+              manut.
+            </Typography>
+            <Tooltip title="Manutenzione">
+              <IconButton onClick={() => handleIconClick('manutenzione')}>
+                <Avatar
+                  src={maintenanceIcons}
+                  alt="Manutenzione Icon"
+                  sx={{ width: '50px', height: '50px' }}
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              height: '100%',
+              flexDirection: 'column', // Disposizione a colonna
+              alignItems: 'center', // Centra gli elementi orizzontalmente
+              justifyContent: 'flex-start', // Allinea gli elementi in alto verticalmente
+              gap: 2, // Spaziatura tra gli elementi
+              border: '1px solid #af7ac5', // Bordo con colore e larghezza
+              borderRadius: '8px', // Arrotonda i bordi (opzionale)
+              padding: 1, // Aggiunge spazio interno
+              width: 'fit-content' // Imposta la larghezza al contenuto
+            }}
+          >
+            <Typography variant="body2" color="grey">
+              conc.
+            </Typography>
+            <Tooltip title="Concession">
+              <IconButton onClick={() => handleIconClick('conc')}>
+                <Avatar
+                  src={concIcon}
+                  alt="Concession Icon"
+                  sx={{ width: '50px', height: '50px' }}
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              height: '100%',
+              flexDirection: 'column', // Disposizione a colonna
+              alignItems: 'center', // Centra gli elementi orizzontalmente
+              justifyContent: 'flex-start', // Allinea gli elementi in alto verticalmente
+              gap: 2, // Spaziatura tra gli elementi
+              border: '1px solid #d4ac0d', // Bordo con colore e larghezza
+              borderRadius: '8px', // Arrotonda i bordi (opzionale)
+              padding: 1, // Aggiunge spazio interno
+              width: 'fit-content' // Imposta la larghezza al contenuto
+            }}
+          >
+            <Typography variant="body2" color="grey">
+              eventi
+            </Typography>
+            <Tooltip title="Eventi">
+              <IconButton onClick={() => handleIconClick('eventi')}>
+                <Avatar src={eventIcon} alt="Eventi Icon" sx={{ width: '50px', height: '50px' }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              height: '100%',
+              flexDirection: 'column', // Disposizione a colonna
+              alignItems: 'center', // Centra gli elementi orizzontalmente
+              justifyContent: 'flex-start', // Allinea gli elementi in alto verticalmente
+              gap: 2, // Spaziatura tra gli elementi
+              border: '1px solid #7dcea0', // Bordo con colore e larghezza
+              borderRadius: '8px', // Arrotonda i bordi (opzionale)
+              padding: 1, // Aggiunge spazio interno
+              width: 'fit-content' // Imposta la larghezza al contenuto
+            }}
+          >
+            <Typography variant="body2" color="grey">
+              SC&MRK
+            </Typography>
+            <Tooltip title="Screen Content">
+              <IconButton onClick={() => handleIconClick('screenContent')}>
+                <Avatar
+                  src={screenIcon}
+                  alt="Screen Content Icon"
+                  sx={{ width: '50px', height: '50px' }}
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+      </>
 
-      <ToggleButtonGroup
-        value={event.eventType ? event.eventType : 'evento'}
-        exclusive
-        sx={{ mb: 4 }}
-        aria-label="text alignment"
-      >
-        {Object.keys(colorMap)
-          .slice(7)
-          .map((type) => (
-            <ToggleButton
-              key={type}
-              value={type}
-              aria-label={type}
+      <>
+        <ToggleButtonGroup
+          value={selectedEvent}
+          exclusive
+          onChange={handleToggleAlignment}
+          aria-label="text alignment"
+        >
+          {macroArea === 'ops' ? (
+            <Box
               sx={{
-                backgroundColor: colorMap[type],
-                '&.Mui-selected': { backgroundColor: colorMap[type], opacity: 0.7 }
+                display: 'flex',
+                flexDirection: 'row', // Layout a colonna
+                mb: 2,
+                mt: 2,
+                justifyContent: 'space-between', // Centra verticalmente
+                gap: 2, // Spaziatura tra gli elementi
+                alignItems: 'flex-start' // Allinea tutti i box in alto
               }}
-              onClick={() => handleToggleAlignment(type)}
             >
-              <Tooltip title={type}>{getIcon(type)}</Tooltip>
-            </ToggleButton>
-          ))}
-      </ToggleButtonGroup>
+              <Avatar
+                alt="My Icon"
+                src={opsIcon}
+                sx={{ width: 50, height: 50 }} // Adjust the size here
+                variant="square" // Change to "circular" for rounded or "rounded" for rounded square
+              />
+
+              <ToggleService
+                value="visita"
+                handleToggleAlignment={handleToggleAlignment}
+                selectedEvent={selectedEvent}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="compleanni"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="matinee"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+            </Box>
+          ) : null}
+          {macroArea === 'manutenzione' ? (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row', // Layout a colonna
+                mb: 2,
+                mt: 2,
+                justifyContent: 'space-between', // Centra verticalmente
+                gap: 2, // Spaziatura tra gli elementi
+                alignItems: 'flex-start' // Allinea tutti i box in alto
+              }}
+            >
+              <Avatar src={maintenanceIcons} alt="My Icon" sx={{ width: '50px', height: '50px' }} />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="manutenzione"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+            </Box>
+          ) : null}
+
+          {macroArea === 'conc' ? (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row', // Layout a colonna
+                mb: 2,
+                mt: 2,
+                justifyContent: 'space-between', // Centra verticalmente
+                gap: 2, // Spaziatura tra gli elementi
+                alignItems: 'flex-start' // Allinea tutti i box in alto
+              }}
+            >
+              <Avatar src={concIcon} alt="My Icon" sx={{ width: '50px', height: '50px' }} />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="delivery"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="promo"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="menu"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+            </Box>
+          ) : null}
+
+          {macroArea === 'eventi' ? (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row', // Layout a colonna
+                mb: 2,
+                mt: 2,
+                justifyContent: 'space-between', // Centra verticalmente
+                gap: 2, // Spaziatura tra gli elementi
+                alignItems: 'flex-start' // Allinea tutti i box in alto
+              }}
+            >
+              <Avatar src={eventIcon} alt="My Icon" sx={{ width: '50px', height: '50px' }} />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="sopraluogo"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="meeting"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="evento"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="convention"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="privateproj"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+            </Box>
+          ) : null}
+
+          {macroArea === 'screenContent' ? (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row', // Layout a colonna
+                mb: 2,
+                mt: 2,
+                justifyContent: 'space-between', // Centra verticalmente
+                gap: 2, // Spaziatura tra gli elementi
+                alignItems: 'flex-start' // Allinea tutti i box in alto
+              }}
+            >
+              <Avatar src={screenIcon} alt="My Icon" sx={{ width: '50px', height: '50px' }} />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="prevendite"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="extra"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="anteprima"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="premiere"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="maratona"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+              <ToggleService
+                selectedEvent={selectedEvent}
+                value="stampa"
+                handleToggleAlignment={handleToggleAlignment}
+              />
+            </Box>
+          ) : null}
+        </ToggleButtonGroup>
+      </>
     </>
   )
-}
-
-const getIcon = (type) => {
-  switch (type) {
-    case 'evento':
-      return <EventIcon />
-    case 'matinee':
-      return <SchoolIcon />
-    case 'prevendite':
-      return <SellIcon />
-    case 'promo':
-      return <DevicesOtherIcon />
-    case 'compleanni':
-      return <CelebrationIcon />
-    case 'extra':
-      return <RocketLaunchIcon />
-    case 'delivery':
-      return <LocalShippingIcon />
-    case 'anteprima':
-      return <MovieCreationIcon />
-    case 'maratona':
-      return <DirectionsRunIcon />
-    case 'visita':
-      return <LocalAirportIcon />
-    case 'stampa':
-      return <PhotoCameraFrontIcon />
-    case 'sopraluogo':
-      return <SettingsAccessibilityIcon />
-    case 'meeting':
-      return <Groups2Icon />
-    default:
-      return null
-  }
 }
 
 export default ToggleEvent
