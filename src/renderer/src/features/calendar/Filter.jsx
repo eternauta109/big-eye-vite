@@ -14,7 +14,7 @@ const classificazione = {
   manutenzione: ['manutenzione'],
   conc: ['delivery', 'promo', 'menu'],
   eventi: ['sopraluogo', 'meeting', 'evento', 'convention', 'privateproj'],
-  screenContent: ['prevendite', 'extra', 'anteprima', 'maratona', 'stampa']
+  screenContent: ['prevendite', 'extra', 'anteprima', 'maratona', 'stampa','premiere']
 }
 
 // eslint-disable-next-line react/prop-types
