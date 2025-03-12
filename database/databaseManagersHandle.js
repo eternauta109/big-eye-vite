@@ -356,13 +356,13 @@ const managers = [
     messages: []
   },
   {
-    userName: 'donatov',
+    userName: 'luigif',
     role: 'tm',
     area: 'area4',
     password: '0106',
     isAuth: false,
-    cinema: 'bari',
-    id: 'barman1',
+    cinema: 'catanzaro',
+    id: 'catman1',
     notification: [],
     messages: []
   }
